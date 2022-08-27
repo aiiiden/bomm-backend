@@ -10,6 +10,7 @@ export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle('Bomm-Backend')
     .setDescription('API Document')
+    .addTag('bomm')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

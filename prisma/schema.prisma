@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 유저
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique // 이메일 (로그인용)
+  
+  // User:UserInfo 와 1:1 관계
+  userInfoId Int @unique @map("userinfo_id")
+  userInfo UserInfo @relation(fields: [userInfoId], references: [id])
+  
+  // CUD timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+}
+
+// User에 대한 정보
+// UserInfo를 User와 분리하는 이유? : 유저의 식별에 대한 정보와 유저의 상세정보를 분리하기 위함임
+model UserInfo {
+  id Int @id @default(autoincrement())
+
+  name String @unique // 이름
+  password String? @db.VarChar(128) // 비밀번호 SHA-512
+
+  // User에서 1:1 참조됨
+  user User?
+  
+  // CUD timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+}
+
